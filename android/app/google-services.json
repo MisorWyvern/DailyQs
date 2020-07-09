@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1069408126850",
+    "firebase_url": "https://app-daily-qs.firebaseio.com",
+    "project_id": "app-daily-qs",
+    "storage_bucket": "app-daily-qs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069408126850:android:44c347ada90608186cf19b",
+        "android_client_info": {
+          "package_name": "com.example.pdm_av1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069408126850-3eorfqr7itb5tstvuf2g44v2djuso5gh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh6gVCL2t1wT0OH1tA1_dB-d5aGXpjbyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069408126850-3eorfqr7itb5tstvuf2g44v2djuso5gh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

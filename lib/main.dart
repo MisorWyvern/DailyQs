@@ -23,9 +23,10 @@ class DailyQs extends StatelessWidget {
       fontFamily: 'Times',
 
       textTheme: TextTheme(
-        headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, fontFamily: 'PressStart2P', color: Color(0xFFEEEEEE)),
+        headline1: TextStyle(fontSize: 22.0, fontFamily: 'PressStart2P', color: Color(0xFFEEEEEE),fontWeight: FontWeight.bold),
         headline2: TextStyle(fontSize: 18.0, fontFamily: 'PressStart2P', color: Color(0xFF320b86)),
-        bodyText1: TextStyle(fontSize: 16.0, fontFamily: 'Hind', color: Color(0xFF320b86)),
+        headline3: TextStyle(fontSize: 20.0, fontFamily: 'Arial', color: Color(0xFF320b86), fontWeight: FontWeight.bold, height: 1.2),
+        bodyText1: TextStyle(fontSize: 16.0, fontFamily: 'Hind', color: Color(0xFF120430), fontWeight: FontWeight.w300,height: 1.3),
         bodyText2: TextStyle(fontSize: 16.0, fontFamily: 'Hind', color: Color(0xFFdddddd)),
       ),
       buttonTheme: ButtonThemeData(
