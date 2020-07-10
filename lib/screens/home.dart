@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-//import 'package:pdm_av1/models/quest.dart';
+import 'package:pdm_av1/models/quest.dart';
+
 
 //CORES
 const Color corListaIcone = Color(0xFF651fff);
@@ -112,8 +113,7 @@ class _HomeState extends State<Home> {
           IconButton(
               icon: Icon(Icons.add_circle),
               onPressed: () {
-                Navigator.pushNamed(context, '/home/addQuest')
-                    .then((questRecebida) {});
+                Navigator.pushNamed(context, '/home/addQuest', arguments: null);
               })
         ],
         title: Text(
@@ -175,11 +175,24 @@ class _HomeState extends State<Home> {
                                 ),
                                 IconButton(
                                   icon: Icon(
+                                    Icons.edit,
+                                    size: tamanhoIcones,
+                                    color: Color(0xFF00AA00),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context,"/home/addQuest", arguments: lista[index].id);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(
                                     Icons.cancel,
                                     size: tamanhoIcones,
                                     color: Color(0xFFFF0000),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+
+                                    db.collection(colecao).document(lista[index].id).delete();
+                                  },
                                 ),
                               ],
                             ),
@@ -190,54 +203,5 @@ class _HomeState extends State<Home> {
             }
           }),
     );
-  }
-}
-
-class Quest {
-  //atributos
-  String _id;
-  String _nomeQuest;
-  String _descQuest;
-  int _quantidade;
-  int _situacao;
-
-  //construtor
-  Quest(String idDocumento, String text, int parse);
-
-  //getters
-  String get id => _id;
-  String get nomeQuest => _nomeQuest;
-  String get descQuest => _descQuest;
-  int get quantidade => _quantidade;
-  int get situacao => _situacao;
-
-  Quest.map(dynamic obj) {
-    this._id = obj['id'];
-    this._nomeQuest = obj['nomeQuest'];
-    this._descQuest = obj['descQuest'];
-    this._quantidade = obj['quantidade'];
-    this._situacao = obj['situacao'];
-  }
-
-  //Converter os dados para um Mapa
-  Map<String, dynamic> toMap() {
-    var map = Map<String, dynamic>();
-    if (_id != null) {
-      map["id"] = _id;
-    }
-    map["nomeQuest"] = _nomeQuest;
-    map["descQuest"] = _descQuest;
-    map["quantidade"] = _quantidade;
-    map["situacao"] = _situacao;
-    return map;
-  }
-
-  //Converter um Mapa para o modelo de dados
-  Quest.fromMap(Map<String, dynamic> map, String id) {
-    this._id = id ?? '';
-    this._nomeQuest = map["nomeQuest"];
-    this._descQuest = map["descQuest"];
-    this._quantidade = map["quantidade"];
-    this._situacao = map["situacao"];
   }
 }

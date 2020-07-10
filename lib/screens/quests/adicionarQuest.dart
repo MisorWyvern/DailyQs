@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pdm_av1/models/quest.dart';
-import 'package:pdm_av1/screens/home.dart';
+//import 'package:pdm_av1/screens/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //TITULO
 const String _tituloAppBar = 'Adicionar DailyQ';
@@ -26,8 +28,32 @@ class _AdicionarQuestState extends State<AdicionarQuest> {
   final TextEditingController controladorCampoDesc = TextEditingController();
   final TextEditingController controladorCampoQtd = TextEditingController();
 
+  var db = Firestore.instance;
+
+  //retornar dados do documento a partir do idDocument
+  void getDocumento(String idDocumento) async {
+    //Recuperar o documento no Firestore
+    DocumentSnapshot doc =
+        await db.collection("quests").document(idDocumento).get();
+
+    setState(() {
+      controladorCampoNome.text = doc.data["nomeQuest"];
+      controladorCampoDesc.text = doc.data["descQuest"];
+      controladorCampoQtd.text = doc.data["quantidade"].toString();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // RECUPERAR o ID do Documento
+    //
+    final String idDocumento = ModalRoute.of(context).settings.arguments;
+
+    if (idDocumento != null) {
+      if (controladorCampoNome.text == "" && controladorCampoDesc.text == "") {
+        getDocumento(idDocumento);
+      }
+    }
     return Scaffold(
       appBar: AppBar(title: Text(_tituloAppBar)),
       body: SingleChildScrollView(
@@ -62,29 +88,37 @@ class _AdicionarQuestState extends State<AdicionarQuest> {
             ),
             RaisedButton(
                 onPressed: () {
-                  _criaQuest(context);
+                  if (controladorCampoDesc.text == "" ||
+                      controladorCampoNome.text == "" ||
+                      controladorCampoQtd.text == "") {
+                    _mostrarAlerta();
+                  } else {
+                    if (idDocumento == null) {
+                      //INSERIR NOVO SE NAO POSSUIR ID
+                      db.collection('quests').document().setData({
+                        'nomeQuest': controladorCampoNome.text,
+                        'descQuest': controladorCampoDesc.text,
+                        'quantidade': int.tryParse(controladorCampoQtd.text),
+                        'situacao': 0
+                      });
+                      Navigator.pop(context);
+                    } else {
+                      //ATUALIZAR SE POSSUIR ID
+                      db.collection('quests').document(idDocumento).updateData({
+                        'nomeQuest': controladorCampoNome.text,
+                        'descQuest': controladorCampoDesc.text,
+                        'quantidade': int.tryParse(controladorCampoQtd.text),
+                        'situacao': 0
+                      });
+                      Navigator.pop(context);
+                    }
+                  }
                 },
                 child: Text(_textoBotaoCriar)),
           ],
         ),
       ),
     );
-  }
-
-  void _criaQuest(BuildContext context) {
-    final int _quantidade = int.tryParse(controladorCampoQtd.text);
-    final String _nomeQuest = controladorCampoNome.text;
-    final String _descQuest = controladorCampoDesc.text;
-    final Icon _iconeQuest = Icon(Icons.assignment,size: tamanhoIcones, color: corListaIcone);
-
-    if (_quantidade != null && _nomeQuest != '' && _descQuest != '') {
-      //final questCriada = Quest(_quantidade, _nomeQuest, _descQuest, _iconeQuest);
-      debugPrint("Quest criada");
-      Navigator.pop(context, /*questCriada*/);
-    } else {
-      debugPrint("Valores invalidos");
-      _mostrarAlerta();
-    }
   }
 
   Future<void> _mostrarAlerta() async {
@@ -103,7 +137,7 @@ class _AdicionarQuestState extends State<AdicionarQuest> {
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0,0,0,10.0),
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
                     child: Icon(
                       Icons.warning,
                       size: 60,
@@ -123,7 +157,10 @@ class _AdicionarQuestState extends State<AdicionarQuest> {
             FlatButton(
               child: Text(
                 'Aceito',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFFF0000)),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFF0000)),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
