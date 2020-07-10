@@ -124,20 +124,124 @@ class _LoginState extends State<Login> {
   }
   
   void logarComEmailSenha(String email, String senha) async {
+    try{
     final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
       email: email,
       password: senha,
     ))
         .user;
 
-        if(user!=null){
-          Navigator.pushNamed(context, '/home');
-        }
-        else{
-          debugPrint('Email ou senha invalidos.');
-        }
+        
+          _mostrarAlertaLoginSucesso('Bem-Vindo!');
+    }catch(a){
+      debugPrint(a.toString());
+      _mostrarAlertaLogin('Email ou senha inválidos. Por favor, informe valores válidos.');
+    }    
+          
+        
   }
 
+  Future<void> _mostrarAlertaLogin(String mensagem) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // Obriga o usuario a clicar no botao!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'ERRO!',
+            style: Theme.of(context).textTheme.headline2,
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
+                    child: Icon(
+                      Icons.warning,
+                      size: 60,
+                      color: Color(0xFFFF0000),
+                    ),
+                  ),
+                  Text(
+                    mensagem,
+                    style: Theme.of(context).textTheme.bodyText1,
+                    textAlign: TextAlign.justify,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFF0000)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _mostrarAlertaLoginSucesso(String mensagem) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // Obriga o usuario a clicar no botao!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Sucesso!',
+            style: Theme.of(context).textTheme.headline2,
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
+                    child: Icon(
+                      Icons.done,
+                      size: 60,
+                      color: Color(0xFF00FF00),
+                    ),
+                  ),
+                  Text(
+                    mensagem,
+                    style: Theme.of(context).textTheme.bodyText1,
+                    textAlign: TextAlign.justify,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF00FF00)),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/home');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 }
 
@@ -180,4 +284,6 @@ class CampoFormulario extends StatelessWidget {
     );
   }
   
+  
+
 }
