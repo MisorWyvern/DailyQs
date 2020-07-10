@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 
 class Quest {
   final int quantidade;
@@ -13,3 +13,4 @@ class Quest {
     return 'Quest{quantidade: $quantidade, nome: $nomeQuest, descricao: $descQuest, icone: $iconeQuest}';
   }
 }
+*/

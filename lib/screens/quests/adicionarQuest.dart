@@ -78,10 +78,9 @@ class _AdicionarQuestState extends State<AdicionarQuest> {
     final Icon _iconeQuest = Icon(Icons.assignment,size: tamanhoIcones, color: corListaIcone);
 
     if (_quantidade != null && _nomeQuest != '' && _descQuest != '') {
-      final questCriada =
-          Quest(_quantidade, _nomeQuest, _descQuest, _iconeQuest);
+      //final questCriada = Quest(_quantidade, _nomeQuest, _descQuest, _iconeQuest);
       debugPrint("Quest criada");
-      Navigator.pop(context, questCriada);
+      Navigator.pop(context, /*questCriada*/);
     } else {
       debugPrint("Valores invalidos");
       _mostrarAlerta();
