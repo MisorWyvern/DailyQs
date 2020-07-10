@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pdm_av1/models/quest.dart';
 
-
 //CORES
 const Color corListaIcone = Color(0xFF651fff);
 const Color _corTextoBase = Color(0xFF320b86);
@@ -142,11 +141,17 @@ class _HomeState extends State<Home> {
                     itemCount: docs.length,
                     itemBuilder: (context, index) {
                       return Card(
-                        color: lista[index].situacao == 0 ? null : Color(0xFF94ffad),
+                        color: lista[index].situacao == 0
+                            ? null
+                            : Color(0xFF94ffad),
                         child: Column(
                           children: [
                             ListTile(
-                              leading: Icon(Icons.assignment, size: tamanhoIcones, color: corListaIcone,),
+                              leading: Icon(
+                                Icons.assignment,
+                                size: tamanhoIcones,
+                                color: corListaIcone,
+                              ),
                               title: Text(
                                 lista[index].nomeQuest,
                                 style: TextStyle(
@@ -167,31 +172,35 @@ class _HomeState extends State<Home> {
                               children: [
                                 IconButton(
                                   icon: Icon(
-                                    Icons.check_circle,
-                                    size: tamanhoIcones,
-                                    color: Color(0xFF00AA00),
-                                  ),
-                                  onPressed: () {},
-                                ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.edit,
+                                    Icons.done,
                                     size: tamanhoIcones,
                                     color: Color(0xFF00AA00),
                                   ),
                                   onPressed: () {
-                                    Navigator.pushNamed(context,"/home/addQuest", arguments: lista[index].id);
+                                    db
+                                        .collection('quests')
+                                        .document(lista[index].id)
+                                        .updateData({'situacao': 1});
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.edit,
+                                      size: tamanhoIcones,
+                                      color: corListaIcone),
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, "/home/addQuest",
+                                        arguments: lista[index].id);
                                   },
                                 ),
                                 IconButton(
                                   icon: Icon(
-                                    Icons.cancel,
+                                    Icons.delete_forever,
                                     size: tamanhoIcones,
                                     color: Color(0xFFFF0000),
                                   ),
                                   onPressed: () {
-
-                                    db.collection(colecao).document(lista[index].id).delete();
+                                    _mostrarAlertaDeletar(index);
                                   },
                                 ),
                               ],
@@ -202,6 +211,70 @@ class _HomeState extends State<Home> {
                     });
             }
           }),
+    );
+  }
+
+  Future<void> _mostrarAlertaDeletar(int index) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // Obriga o usuario a clicar no botao!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Cuidado!',
+            style: Theme.of(context).textTheme.headline2,
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
+                    child: Icon(
+                      Icons.warning,
+                      size: 60,
+                      color: Color(0xFFFF0000),
+                    ),
+                  ),
+                  Text(
+                    'Ao aceitar, você deletará para sempre a missão. Deseja continuar?',
+                    style: Theme.of(context).textTheme.bodyText1,
+                    textAlign: TextAlign.justify,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'Sim',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFF0000)),
+              ),
+              onPressed: () {
+                db.collection(colecao).document(lista[index].id).delete();
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'Não',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFF0000)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
