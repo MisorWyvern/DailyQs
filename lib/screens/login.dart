@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 //Trocar CORES
@@ -7,6 +9,7 @@ const Color _corDoTextoBase = Color(0xFFffffff);
 
 //Trocar Textos
 const String _tituloLogin = "Organize. Crie. Produza.";
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class Login extends StatefulWidget {
   @override
@@ -14,13 +17,16 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  TextEditingController controladorEmail = new TextEditingController();
+  TextEditingController controladorPass = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.indigo[50],
       child: Center(
         child: Container(
-          height: MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height * 0.2),
+          height: MediaQuery.of(context).size.height -
+              (MediaQuery.of(context).size.height * 0.2),
           margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.075,
               0, MediaQuery.of(context).size.width * 0.075, 0),
           padding: EdgeInsets.all(15),
@@ -60,25 +66,37 @@ class _LoginState extends State<Login> {
                 ),
               ),
               CampoFormulario(
-                dicaCampo: 'Informe o usuario.',
-                labelCampo: 'Usuario',
+                dicaCampo: 'Informe o email.',
+                labelCampo: 'Email',
                 iconeCampo: Icon(Icons.account_box, color: _corDoTextoBase),
+                controlador: controladorEmail,
               ),
               CampoFormulario(
-                
                 dicaCampo: 'Informe a senha.',
                 labelCampo: 'Senha',
                 iconeCampo: Icon(Icons.lock, color: _corDoTextoBase),
+                controlador: controladorPass,
               ),
               Container(
-                alignment: Alignment.centerRight,
                 margin: EdgeInsets.only(bottom: 0),
-                child: Text(
-                  'Esqueceu a senha?',
-                  style: TextStyle(
-                    color: _corDoTextoBase,
-                    fontSize: 9,
-                  ),
+                child: Row(
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        text: 'Cadastrar-se',
+                        style: TextStyle(fontSize: 9, color: _corDoTextoBase,),
+                        recognizer: TapGestureRecognizer()..onTap = () => Navigator.pushNamed(context, '/login/cadastro'),
+                      ),
+                    ),
+                    Expanded(child: Container(child: null)),
+                    Text(
+                      'Esqueceu a senha?',
+                      style: TextStyle(
+                        color: _corDoTextoBase,
+                        fontSize: 9,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Row(
@@ -86,7 +104,7 @@ class _LoginState extends State<Login> {
                   Expanded(
                     child: RaisedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/home');
+                        logarComEmailSenha(controladorEmail.text, controladorPass.text);
                       },
                       color: _corDoBotaoEntra,
                       textColor: Colors.white,
@@ -104,24 +122,41 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+  
+  void logarComEmailSenha(String email, String senha) async {
+    final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: senha,
+    ))
+        .user;
+
+        if(user!=null){
+          Navigator.pushNamed(context, '/home');
+        }
+        else{
+          debugPrint('Email ou senha invalidos.');
+        }
+  }
+
+
 }
 
 class CampoFormulario extends StatelessWidget {
   final Icon iconeCampo;
   final String labelCampo;
   final String dicaCampo;
- 
+  final TextEditingController controlador;
 
-  const CampoFormulario({this.iconeCampo, this.labelCampo, this.dicaCampo});
+  const CampoFormulario({this.iconeCampo, this.labelCampo, this.dicaCampo, this.controlador});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       child: TextFormField(
+        controller: controlador,
         style: Theme.of(context).textTheme.bodyText2,
         decoration: InputDecoration(
-          
           //isDense: true,
           //floatingLabelBehavior: FloatingLabelBehavior.always,
           contentPadding: const EdgeInsets.all(15.0),
@@ -137,9 +172,12 @@ class CampoFormulario extends StatelessWidget {
           labelText: labelCampo,
           labelStyle: TextStyle(color: _corDoTextoBase),
           hintText: dicaCampo,
-          hintStyle: TextStyle(color: Color(0xFFb085f5),),
+          hintStyle: TextStyle(
+            color: Color(0xFFb085f5),
+          ),
         ),
       ),
     );
   }
+  
 }

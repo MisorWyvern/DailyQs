@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pdm_av1/screens/cadastro.dart';
 import 'package:pdm_av1/screens/login.dart';
 import 'package:pdm_av1/screens/home.dart';
 import 'package:pdm_av1/screens/quests/adicionarQuest.dart';
@@ -37,6 +38,7 @@ class DailyQs extends StatelessWidget {
     
     home: Login(), // Rota de nome '/'
     routes: <String, WidgetBuilder> {
+      '/login/cadastro': (BuildContext context) => Cadastro(),
       '/home': (BuildContext context) => Home(),
       '/home/addQuest': (BuildContext context) => AdicionarQuest(),
       '/home/sobre': (BuildContext context) => Sobre(),
